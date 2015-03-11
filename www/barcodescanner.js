@@ -6,16 +6,12 @@
  * Copyright (c) 2011, IBM Corporation
  */
 
-    var ScannerLoader = function (require, exports, module) {
-
-        var exec = require("cordova/exec");
-
         /**
          * Constructor.
          *
          * @returns {BarcodeScanner}
          */
-        function BarcodeScanner() {
+        var BarcodeScanner = function(){
 
             /**
              * Encoding constants.
@@ -86,7 +82,7 @@
                 return;
             }
 
-            exec(successCallback, errorCallback, 'BarcodeScanner', 'scan', []);
+            cordova.exec(successCallback, errorCallback, 'BarcodeScanner', 'scan', []);
         };
 
         //-------------------------------------------------------------------
@@ -106,20 +102,21 @@
                 return;
             }
 
-            exec(successCallback, errorCallback, 'BarcodeScanner', 'encode', [
+            cordova.exec(successCallback, errorCallback, 'BarcodeScanner', 'encode', [
                 {"type": type, "data": data, "options": options}
             ]);
         };
 
-        var barcodeScanner = new BarcodeScanner();
-        module.exports = barcodeScanner;
 
+    //-------------------------------------------------------------------
+
+    if(!window.plugins) {
+        window.plugins = {};
+    }
+    if (!window.plugins.barcodeScanner) {
+        window.plugins.barcodeScanner = new BarcodeScanner();
     }
 
-    ScannerLoader(require, exports, module);
-
-    cordova.define("cordova/plugin/BarcodeScanner", ScannerLoader);
-
-
-
-
+    if (typeof module != 'undefined' && module.exports) {
+      module.exports = new BarcodeScanner();
+    }
